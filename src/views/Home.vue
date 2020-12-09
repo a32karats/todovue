@@ -20,14 +20,31 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
       Todo: "",
       texts: [],
     };
-  }
-};
+ },
+ methods: {
+   addInput: function() {
+     axios.post("https://infinite-citadel-19838.herokuapp.com/api")
+       .then(res => {
+         this.texts = res.data;
+         this.texts.push(this.newItem);
+         this.newItem = "";
+       })
+   },
+   removeInput(index) {
+     this.texts.splice(index,1);
+   },
+   updateInput: function() {
+     axios.put("https://infinite-citadel-19838.herokuapp.com/api" + id, data).then(() => {
+    this.getTodoList()}
+    )},
+ }
 </script>
 
 <style scoped>
