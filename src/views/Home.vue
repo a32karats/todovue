@@ -22,30 +22,38 @@
 <script>
 import axios from "axios";
 export default {
-  data() {
-    return {
-      Todo: "",
-      texts: [],
-    };
+ data() {
+   return {
+     Todo: "",
+     texts: [],
+   };
+},
+ async created() {
+   let data = await axios.get("http://localhost:8080/");
+   this.texts = data.texts;
  },
- methods: {
-   addInput: function() {
-     axios.post("https://infinite-citadel-19838.herokuapp.com/api")
-       .then(res => {
-         this.texts = res.data;
-         this.texts.push(this.newItem);
-         this.newItem = "";
-       })
-   },
-   removeInput(index) {
-     this.texts.splice(index,1);
-   },
-   updateInput: function() {
-     axios.put("https://infinite-citadel-19838.herokuapp.com/api" + id, data).then(() => {
-    this.getTodoList()}
-    )},
- }
+methods: {
+  addInput: function() {
+    axios.post("http://localhost:8080/")
+      .then(res => {
+        this.texts = res.data;
+        this.texts.push(this.newItem);
+        this.newItem = "";
+      })
+  },
+  removeInput(index) {
+    this.texts.splice(index,1);
+  },
+  updateInput: function() {
+    axios.put("http://localhost:8080/").then(() => {
+   this.getTodoList()}
+   )},
+},
+  mounted() {
+    axios.get('/').then(res =>{this.texts = res.data;})
+}};
 </script>
+
 
 <style scoped>
 html {
@@ -62,6 +70,8 @@ html {
  left: 0;
  margin: auto;
  width: 45%;
+ min-height: 20%;
+ height: auto !important;
  height: 20%;
 }
 
@@ -158,6 +168,4 @@ h2 {
   background: #70FADC;
   color: white
 }
-
-
 </style>
