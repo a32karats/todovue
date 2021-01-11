@@ -7,11 +7,11 @@
         <button @click="addInput" type="submit">追加</button>
      </div>
       <div class="form">
-         <div class="addform" v-for="(text,id) in texts" :key="id">
-          <input type="text" v-model="text[id]">
-          <button class="updatebutton" @click="updateInput(text.id)">更新
+         <div class="addform" v-for="(text,index) in data" :key="index">
+           <input type="text" v-model="text[index]">
+           <button class="updatebutton" @click="updateInput">更新
            </button>
-           <button class="removebutton" @click="removeInput(text.id)">削除
+           <button class="removebutton" @click="removeInput">削除
            </button>
         </div>
      </div>
@@ -25,27 +25,32 @@ export default {
  data() {
    return {
      Todo: "",
-     texts: [],
+     data: [],
    };
 },
- async created() {
-   let data = await axios.get("http://localhost:8080/");
-   this.texts = data.texts;
- },
 methods: {
-  addInput: function() {
-    axios.post("http://localhost:8080/")
-      .then(res => {
-        this.texts = res.data;
-        this.texts.push(this.newItem);
-        this.newItem = "";
-      })
-  },
+  addInput() {
+    axios.post("http://localhost:8080/api",{
+      Todo: this.Todo,
+    })
+    .then(res => {
+      console.log(res);
+      this.Todo = "";
+    })
+   },
+   text() {
+     axios.get("http://localhost:8080/api" + this.index)
+     .then(res => {
+       this.data = res.data.text;
+       this.data.push(this.Todo);
+     });
+   },
+
   removeInput(index) {
     this.texts.splice(index,1);
   },
-  updateInput: function() {
-    axios.put("http://localhost:8080/").then(() => {
+  updateInput() {
+    axios.put("http://localhost:8080/api").then(() => {
    this.getTodoList()}
    )},
 },
@@ -56,6 +61,10 @@ methods: {
 
 
 <style scoped>
+element.style {
+  user-select: auto;
+}
+
 html {
   position:relative;
 }
@@ -70,8 +79,6 @@ html {
  left: 0;
  margin: auto;
  width: 45%;
- min-height: 20%;
- height: auto !important;
  height: 20%;
 }
 
