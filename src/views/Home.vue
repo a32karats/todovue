@@ -3,60 +3,65 @@
     <div class="frame">
       <h2>Todo List</h2>
       <div class="basic">
-        <input type="text" v-model="Todo">
+        <input type="text" v-model="Todo" />
         <button @click="addInput" type="submit">追加</button>
-     </div>
+      </div>
       <div class="form">
-         <div class="addform" v-for="(text,index) in data" :key="index">
-           <input type="text" v-model="text[index]">
-           <button class="updatebutton" @click="updateInput">更新
-           </button>
-           <button class="removebutton" @click="removeInput">削除
-           </button>
+        <div class="addform" v-for="(text, index) in data" :key="index">
+          <input type="text" v-model="text.todo" />
+          <button class="updatebutton" @click="updateInput">更新</button>
+          <button class="removebutton" @click="removeInput">削除</button>
         </div>
-     </div>
-   </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 export default {
- data() {
-   return {
-     Todo: "",
-     data: [],
-   };
-},
-methods: {
-  addInput() {
-    axios.post("http://localhost:8080/api",{
-      Todo: this.Todo,
-    })
-    .then(res => {
-      console.log(res);
-      this.Todo = "";
-    })
-   },
-   text() {
-     axios.get("http://localhost:8080/api" + this.index)
-     .then(res => {
-       this.data = res.data.text;
-       this.data.push(this.Todo);
-     });
-   },
-
-  removeInput(index) {
-    this.texts.splice(index,1);
+  data() {
+    return {
+      Todo: "",
+      data: [],
+    };
   },
-  updateInput() {
-    axios.put("http://localhost:8080/api").then(() => {
-   this.getTodoList()}
-   )},
-},
+  methods: {
+    addInput() {
+      // バックエンドのAPIはポート番号が8000です
+      axios.post("http://localhost:8000/api", {
+          todo: this.Todo,
+        })
+        .then((res) => {
+          console.log(res);
+          this.Todo = "";
+        });
+    },
+    removeInput() {
+      axios.delete("http://localhost:8000/api" + this.data)
+        .then((res) => {
+            console.log(res);
+        });
+    },
+    updateInput() {
+      // バックエンドのAPIはポート番号が8000です
+      axios.put("http://localhost:8000/api", {
+            todo: this.Todo,
+        })
+       .then((res) => {
+          console.log(res);
+       });
+    },
+  },
   mounted() {
-    axios.get('/').then(res =>{this.texts = res.data;})
-}};
+    // バックエンドのAPIはポート番号が8000です
+    axios.get("http://localhost:8000/api").then((res) => {
+      // thisで使う場合はdataプロパティに予め定義する必要がある
+      // また今回はdataで表示させる処理を行っているのでthis.dataで良い
+      this.data = res.data.data;
+    });
+  },
+};
 </script>
 
 
@@ -66,27 +71,27 @@ element.style {
 }
 
 html {
-  position:relative;
+  position: relative;
 }
 .frame {
- width:30%;
- background-color: white;
- border-radius: 10px;
- position:absolute;
- top: 0;
- right: 0;
- bottom: 0;
- left: 0;
- margin: auto;
- width: 45%;
- height: 20%;
+  width: 30%;
+  background-color: white;
+  border-radius: 10px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  width: 45%;
+  height: 20%;
 }
 
 h2 {
-  position:absolute;
+  position: absolute;
   left: 5%;
   top: 20%;
-  color:black;
+  color: black;
   font-size: 30px;
 }
 
@@ -101,17 +106,17 @@ h2 {
   border-radius: 8px;
   color: black;
   text-align: left;
-  border-color: #CCCCCC;
+  border-color: #cccccc;
   border-style: solid;
   border-width: 1px;
 }
 
 .basic button {
-  color: #CD70FA;
+  color: #cd70fa;
   margin-left: 50px;
   padding: 10px 20px;
   border-radius: 8px;
-  border-color: #CD70FA;
+  border-color: #cd70fa;
   border-style: solid;
   border-width: 2px;
   background-color: white;
@@ -131,18 +136,18 @@ h2 {
   height: 40px;
   width: 30%;
   border-radius: 8px;
-  border-color:  #CCCCCC;
+  border-color: #cccccc;
   border-style: solid;
   border-width: 1px;
   color: black;
 }
 
 .updatebutton {
-  color: #FA9870;
+  color: #fa9870;
   margin-left: 270px;
   padding: 10px 20px;
   border-radius: 8px;
-  border-color: #FA9870;
+  border-color: #fa9870;
   border-style: solid;
   border-width: 2px;
   background-color: white;
@@ -150,11 +155,11 @@ h2 {
 }
 
 .removebutton {
-  color: #70FADC;
+  color: #70fadc;
   margin-left: 10px;
   padding: 10px 20px;
   border-radius: 8px;
-  border-color: #70FADC;
+  border-color: #70fadc;
   border-style: solid;
   border-width: 2px;
   background-color: white;
@@ -162,17 +167,17 @@ h2 {
 }
 
 .basic button:hover {
-  background: #CD70FA;
+  background: #cd70fa;
   color: white;
 }
 
 .updatebutton:hover {
-  background: #FA9870;
+  background: #fa9870;
   color: white;
 }
 
 .removebutton:hover {
-  background: #70FADC;
-  color: white
+  background: #70fadc;
+  color: white;
 }
 </style>
