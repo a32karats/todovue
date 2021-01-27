@@ -9,7 +9,7 @@
       <div class="form">
         <div class="addform" v-for="(text, index) in data" :key="index">
           <input type="text" v-model="text.todo" />
-          <button class="updatebutton" @click="updateInput">更新</button>
+          <button class="updatebutton" @click="updateInput(index)">更新</button>
           <button class="removebutton" @click="removeInput">削除</button>
         </div>
       </div>
@@ -26,38 +26,45 @@ export default {
       data: [],
     };
   },
+  
   methods: {
     addInput() {
+      console.log(this.Todo)
       // バックエンドのAPIはポート番号が8000です
-      axios.post("http://localhost:8000/api", {
-          todo: this.Todo,
-        })
-        .then((res) => {
-          console.log(res);
-          this.Todo = "";
-        });
+      axios.post("http://localhost:8000/api/todo", {
+        todo: this.Todo,
+      })
+      .then((res) => {
+        console.log(res);
+        this.Todo = "";
+      }).catch((err) => {
+        console.log(err)
+      });
     },
     removeInput() {
-      axios.delete("http://localhost:8000/api" + this.data)
+      axios.delete("http://localhost:8000/api/todo" + this.data)
         .then((res) => {
-            console.log(res);
+          console.log(res);
         });
     },
-    updateInput() {
+    updateInput(index) {
       // バックエンドのAPIはポート番号が8000です
-      axios.put("http://localhost:8000/api", {
-            todo: this.Todo,
-        })
-       .then((res) => {
-          console.log(res);
-       });
+      const todo = this.data[index].todo;
+      const id = this.data[index].id;
+
+      axios.put(`http://localhost:8000/api/todo/${id}`, {
+        todo: todo,
+      }).then((res) => {
+        console.log(res);
+      });
     },
   },
   mounted() {
     // バックエンドのAPIはポート番号が8000です
-    axios.get("http://localhost:8000/api").then((res) => {
+    axios.get("http://localhost:8000/api/todo").then((res) => {
       // thisで使う場合はdataプロパティに予め定義する必要がある
       // また今回はdataで表示させる処理を行っているのでthis.dataで良い
+      console.log(res);
       this.data = res.data.data;
     });
   },
