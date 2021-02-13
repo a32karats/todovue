@@ -26,7 +26,7 @@ export default {
       data: [],
     };
   },
-  
+
   methods: {
     addInput() {
       console.log(this.Todo)
@@ -36,16 +36,24 @@ export default {
       })
       .then((res) => {
         console.log(res);
+        this.Todo.push([])
         this.Todo = "";
       }).catch((err) => {
         console.log(err)
       });
     },
+    created() { 
+    this.addInput()
+  },
     removeInput() {
-      axios.delete("http://localhost:8000/api/todo" + this.data)
-        .then((res) => {
-          console.log(res);
-        });
+      axios.delete("http://localhost:8000/api/todo", {
+        todo: this.Todo,
+      })
+      .then((res) => {
+        console.log(res);
+      }).catch((err) => {
+        console.log(err)
+      });
     },
     updateInput(index) {
       // バックエンドのAPIはポート番号が8000です
